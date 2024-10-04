@@ -8,5 +8,8 @@ project(SonyCalculator LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-# Add the executable
-add_executable(SonyCalculator exec/main.cpp)
+# Add the subdirectory where the library for calculator is
+add_subdirectory(calc)
+
+# Add the subdirectory where the executer for calculator is
+add_subdirectory(exec)
