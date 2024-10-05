@@ -1,15 +1,5 @@
 #include "Evaluator.h"
 
-// int precedence(char op) {
-//     if(op == '+' || op == '-') {
-//         return 1;
-//     }
-//     if(op == '*' || op == '/') {
-//         return 2;
-//     }
-//     return 0;
-// }
-
 // Recursive function to evaluate expressions, especially those within parentheses
 bool evaluateExpression(const char *expression, int &result, int &i, ErrorCode &errorFlag) {
     Calculator calculator;
