@@ -11,5 +11,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 # Add the subdirectory where the library for calculator is
 add_subdirectory(calc)
 
+# Add the subdirectory where the library for calculator is
+add_subdirectory(evaluator)
+
 # Add the subdirectory where the executer for calculator is
 add_subdirectory(exec)

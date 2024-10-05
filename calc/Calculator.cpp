@@ -1,5 +1,4 @@
 #include "Calculator.h"
-#include <stdexcept>
 
 // Constructor
 Calculator::Calculator() {}
@@ -20,9 +19,23 @@ double Calculator::multiply(double a, double b) {
 }
 
 // Division (handles division by zero)
-double Calculator::divide(double a, double b) {
+double Calculator::divide(double a, double b, ErrorCode &errorFlag) {
     if (b == 0.0) {
-        throw std::invalid_argument("Division by zero is not allowed.");
+        errorFlag = ErrorCode::DIVISION_BY_ZERO;
+        return 0;
     }
     return a / b;
+}
+
+double Calculator::applyOperation(double a, double b, char op, ErrorCode &errorFlag) {
+    errorFlag=ErrorCode::NONE;
+    switch(op) {
+        case '+': return add(a,b);
+        case '-': return subtract(a,b);
+        case '*': return multiply(a,b);
+        case '/': return divide(a,b, errorFlag);
+        default: 
+            errorFlag = ErrorCode::INVALID_CHARACTER;
+    }
+    return 0;
 }
