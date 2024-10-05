@@ -3,10 +3,10 @@
 // Recursive function to evaluate expressions, especially those within parentheses
 bool evaluateExpression(const char *expression, int &result, int &i, ErrorCode &errorFlag) {
     Calculator calculator;
-    std::vector<char> operators;    // Vector to store operators (+, -, *, /)
-    std::vector<int> values;        // Vector to store operands
-    
-    bool expectingOperand = true;  // Flag to determine if an operand is expected
+    std::vector<char> operators;  // Vector to store operators (+, -, *, /)
+    std::vector<int> values;      // Vector to store operands
+
+    bool expectingOperand = true; // Flag to determine if an operand is expected
 
     while (expression[i] != '\0') {
         // Skip whitespace
@@ -23,18 +23,19 @@ bool evaluateExpression(const char *expression, int &result, int &i, ErrorCode &
                 return false; // Error in sub-expression
             }
             values.push_back(subResult);
-            expectingOperand = false;
+            expectingOperand = false; // After processing a sub-expression, we don't expect another operand immediately
             continue;
         }
 
         // Handle closing parenthesis
         if (expression[i] == ')') {
             i++; // Move past ')'
+            // If we just found a ')', we should not expect an operand
             if (expectingOperand) {
                 errorFlag = ErrorCode::MISPLACED_OPERATOR; // Could be a misplaced operator
                 return false;
             }
-            break; // Return to the caller to handle
+            break; // Return to the caller to handle the closing of the expression
         }
 
         // Handle numbers (including negative numbers)
@@ -43,10 +44,6 @@ bool evaluateExpression(const char *expression, int &result, int &i, ErrorCode &
             if (expression[i] == '-') {
                 sign = -1;
                 i++; // Move past '-'
-                if (!isdigit(expression[i])) {
-                    errorFlag = ErrorCode::MISPLACED_OPERATOR;
-                    return false;
-                }
             }
 
             int num = 0;
@@ -55,7 +52,7 @@ bool evaluateExpression(const char *expression, int &result, int &i, ErrorCode &
                 i++;
             }
             values.push_back(sign * num);
-            expectingOperand = false;
+            expectingOperand = false; // After a number, we expect an operator now
             continue;
         }
 
@@ -63,15 +60,15 @@ bool evaluateExpression(const char *expression, int &result, int &i, ErrorCode &
         if (strchr("+-*/", expression[i]) != nullptr) {
             char currentOp = expression[i];
             i++; // Move past operator
-            
-            if (expectingOperand) {
+
+            if (expectingOperand) { // If we didn't expect an operand, it's misplaced
                 errorFlag = ErrorCode::MISPLACED_OPERATOR;
                 return false;
             }
 
             // Push the operator to the operators vector
             operators.push_back(currentOp);
-            expectingOperand = true; // Next should be an operand
+            expectingOperand = true; // Now we expect an operand next
             continue;
         }
 
@@ -81,7 +78,7 @@ bool evaluateExpression(const char *expression, int &result, int &i, ErrorCode &
     }
 
     // Check if we finished processing with open parentheses
-    if (expectingOperand && !operators.empty()) {
+    if (expectingOperand) {
         errorFlag = ErrorCode::INCOMPLETE_EXPRESSION; // No value for the last operator
         return false;
     }
@@ -96,7 +93,7 @@ bool evaluateExpression(const char *expression, int &result, int &i, ErrorCode &
         int b = values.back(); values.pop_back();
         int a = values.back(); values.pop_back();
         char op = operators.back(); operators.pop_back();
-        
+
         int res = calculator.applyOperation(a, b, op, errorFlag);
         if (errorFlag != ErrorCode::NONE) {
             return false;
@@ -110,9 +107,10 @@ bool evaluateExpression(const char *expression, int &result, int &i, ErrorCode &
         return false;
     }
 
-    result = values.back();
+    result = values.back(); // Set the final result
     return true;
 }
+
 
 bool evaluate(const char *expression, int &result, ErrorCode &errorFlag) {
     int index = 0;
@@ -144,6 +142,5 @@ bool evaluate(const char *expression, int &result, ErrorCode &errorFlag) {
             return false;
         }
     }
-
     return success && (errorFlag == ErrorCode::NONE);
 }
