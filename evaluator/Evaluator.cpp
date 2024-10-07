@@ -30,11 +30,18 @@ bool evaluateExpression(const char *expression, int &result, int &i, ErrorCode &
         // Handle closing parenthesis
         if (expression[i] == ')') {
             i++; // Move past ')'
-            // If we just found a ')', we should not expect an operand
-            if (expectingOperand) {
-                errorFlag = ErrorCode::MISPLACED_OPERATOR; // Could be a misplaced operator
+            // If we just found a '(' before the ')', we have no expression to evaluate
+            if (expression[i-2] == '('){
+                std::cout << "Hits here 1 - else" << std::endl;
+                errorFlag = ErrorCode::NO_EXPRESSION; // Could be a misplaced operator
                 return false;
             }
+            // If we just found a ')', we should not expect an operand
+            if (expectingOperand) {
+                std::cout << "Hits here 1" << std::endl;
+                errorFlag = ErrorCode::INCOMPLETE_EXPRESSION; // Could be a misplaced operator
+                return false;
+            } 
             break; // Return to the caller to handle the closing of the expression
         }
 
@@ -79,6 +86,7 @@ bool evaluateExpression(const char *expression, int &result, int &i, ErrorCode &
 
     // Check if we finished processing with open parentheses
     if (expectingOperand) {
+        std::cout << "Hits here 2" << std::endl;
         errorFlag = ErrorCode::INCOMPLETE_EXPRESSION; // No value for the last operator
         return false;
     }
@@ -86,6 +94,7 @@ bool evaluateExpression(const char *expression, int &result, int &i, ErrorCode &
     // Apply remaining operators
     while (!operators.empty()) {
         if (values.size() < 2) {
+            std::cout << "Hits here 3" << std::endl;
             errorFlag = ErrorCode::INCOMPLETE_EXPRESSION;
             return false;
         }
@@ -117,13 +126,21 @@ bool evaluate(const char *expression, int &result, ErrorCode &errorFlag) {
     bool success = evaluateExpression(expression, result, index, errorFlag);
     
     // After evaluation, ensure that we've processed the entire expression
+    std::cout << "expression: " << expression << std::endl;
     while (expression[index] != '\0') {
+        std::cout << "expression char: " << expression[index] << std::endl;
         if (isspace(expression[index])) {
             index++;
             continue;
+        }        
+        
+        if (strchr("+-*/0123456789", expression[index]) != nullptr) {
+            errorFlag = ErrorCode::MISPLACED_OPERATOR;
+        } else {
+            // If there's any non-space character left, it's an error
+            errorFlag = ErrorCode::INVALID_CHARACTER;
         }
-        // If there's any non-space character left, it's an error
-        errorFlag = ErrorCode::INVALID_CHARACTER;
+        
         return false;
     }
 

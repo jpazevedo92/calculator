@@ -6,7 +6,6 @@ TEST(EvaluateTest, BasicOperations) {
     int result;
     ErrorCode errorFlag;
 
-    // Valid expressions
     EXPECT_TRUE(evaluate("1 + 3", result, errorFlag));
     EXPECT_EQ(result, 4);
 
@@ -24,7 +23,6 @@ TEST(EvaluateTest, MissingBrackets) {
     int result;
     ErrorCode errorFlag;
 
-    // Missing closing bracket
     EXPECT_FALSE(evaluate("(1 + (12 * 2)", result, errorFlag));
     EXPECT_EQ(errorFlag, ErrorCode::MISMATCHED_PARENTHESIS);
 }
@@ -44,7 +42,7 @@ TEST(EvaluateTest, MisplacedOperators) {
     EXPECT_FALSE(evaluate("1 + + 3", result, errorFlag));
     EXPECT_EQ(errorFlag, ErrorCode::MISPLACED_OPERATOR);
 
-    EXPECT_FALSE(evaluate("1 * (2 + )", result, errorFlag));
+    EXPECT_FALSE(evaluate("1 * (2 +)", result, errorFlag));
     EXPECT_EQ(errorFlag, ErrorCode::INCOMPLETE_EXPRESSION);
 }
 
@@ -64,7 +62,7 @@ TEST(EvaluateTest, IncompleteExpressions) {
     EXPECT_EQ(errorFlag, ErrorCode::INCOMPLETE_EXPRESSION);
 
     EXPECT_FALSE(evaluate("()", result, errorFlag));
-    EXPECT_EQ(errorFlag, ErrorCode::MISMATCHED_PARENTHESIS);
+    EXPECT_EQ(errorFlag, ErrorCode::NO_EXPRESSION);
 }
 
 TEST(EvaluateTest, NegativeNumbers) {

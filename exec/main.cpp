@@ -6,6 +6,7 @@
 // Map error codes to their descriptions
 std::unordered_map<ErrorCode, std::string> errorMessages = {
     {ErrorCode::NONE, "No error"},
+    {ErrorCode::NO_EXPRESSION, "Error: Expression not exists"},
     {ErrorCode::MISMATCHED_PARENTHESIS, "Error: Mismatched parentheses"},
     {ErrorCode::INVALID_CHARACTER, "Error: Invalid character in the expression"},
     {ErrorCode::MISPLACED_OPERATOR, "Error: Misplaced operator"},
@@ -37,7 +38,7 @@ int main(int argc, char* argv[]) {
     if (evaluate(expression.c_str(), result, errorFlag)) {
         std::cout << "Evaluating: \"" << expression << "\" = " << result << " (true)" << std::endl;
     } else {
-        std::cerr << "Evaluating: \"" << expression << "\" = N/A" << errorMessages[errorFlag] << " (false)" << std::endl;
+        std::cerr << "Evaluating: \"" << expression << "\" = N/A -> " << errorMessages[errorFlag] << " (false)" << std::endl;
     }
 
     return 0;

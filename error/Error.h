@@ -6,7 +6,8 @@
 
 // Define error codes
 enum class ErrorCode {
-    NONE,                     // No error
+    NONE,                       // No error
+    NO_EXPRESSION,             // Expression not exists (e.g., ())
     MISMATCHED_PARENTHESIS,    // Mismatched parentheses
     INVALID_CHARACTER,         // Invalid character in expression
     MISPLACED_OPERATOR,        // Operator in an invalid position
